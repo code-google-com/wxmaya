@@ -1,0 +1,12 @@
+#!/usr/bin/env python2.5
+
+from app import *
+import wx.py.shell
+
+class pyshell(app):
+    def OnInitUI(self):
+        self.shell = wx.py.shell.Shell(self.frame)
+
+
+if __name__ == '__main__':
+    pyshell()

@@ -1,5 +1,5 @@
 
-
+import wx
 from  wx import glcanvas as glcanvas
 from app import app
 from OpenGL.GL import *

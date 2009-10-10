@@ -34,9 +34,9 @@ def wxmayaAppsDel(app):
     except:
         pass
 
-#class frame(wx.Frame):
-#    def __init__(self, title, size):
-#        wx.Frame(self, None, -1, "Hello from wxPython", size=size)
+class frame(wx.Frame):
+    def __init__(self, title, size):
+        wx.Frame.__init__(self, None, -1, "Hello from wxPython", size=size)
 
 class app(wx.App):
     def __init__(self, size=(800,500) ):
@@ -49,10 +49,11 @@ class app(wx.App):
             self.MainLoop()
         wxmayaAppsAdd(self)
         
+        
     def OnInit(self):
         self.menu_bar  = wx.MenuBar()
-        self.frame = wx.Frame(None, -1, "Hello from wxPython", size=self.size)
-        ##self.frame = frame("Hello from wxPython", size=self.size)
+        #self.frame = wx.Frame(None, -1, "Hello from wxmaya", size=self.size)
+        self.frame = frame("Hello from wxPython", size=self.size)
         
         if hasattr(self,'OnInitUI'):
             self.OnInitUI()

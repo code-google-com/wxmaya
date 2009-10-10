@@ -16,6 +16,12 @@ import app
 reload(app)
 from app import wxmayaApps as appList, app
 
+import dockingWindowDemo
+reload(dockingWindowDemo)
+from dockingWindowDemo import dockingWindowDemo
+
+
+
 # helloWorldGL need pyOpenGl to work, so if pyOpenGL is not installed, 
 # we just ignore it. 
 # TODO: add a class to initialize opengl using either Maya OpenMayaRender or Python OpenGL

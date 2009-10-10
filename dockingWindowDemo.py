@@ -1096,12 +1096,6 @@ class SettingsPanel(wx.Panel):
 
 
 
-from app import app
-class dockingWindowDemo(app):
-    def OnInitUI(self):
-        self.frame = PyAUIFrame(self.frame, wx.ID_ANY, "wx.aui wxPython Demo", size=(750, 590))
-
-
 #----------------------------------------------------------------------
 
 
@@ -1113,7 +1107,7 @@ This demo is a wxmaya version of the AUI_DockingWindowMgr found in the standard 
 Its here to demonstrate how easy it is to integrate a standard wx example to run inside maya.<br><br>
 Not the tree window on the left that displays the dag nodes currently loaded in maya! =D
 </h4>
-<hr>
+<HR WIDTH="100%" COLOR="#6699FF"  SIZE="2">
 <h3>wx.aui, the Advanced User Interface module</h3>
 
 <br/><b>Overview</b><br/>
@@ -1137,6 +1131,17 @@ interfaces quickly and easily.</p>
 
 </body></html>
 """
+
+
+
+# wxmaya integration!
+from app import app
+class dockingWindowDemo(app):
+    def OnInitUI(self):
+        # basically, we just need to replace the default self.frame 
+        # by the one defined in this example and voila! everything just works!
+        self.frame = PyAUIFrame(self.frame, wx.ID_ANY, "wx.aui wxPython Demo", size=(750, 590))
+
 
 if __name__ == '__main__':
     dockingWindowDemo()

@@ -14,7 +14,7 @@ from pyshell import pyshell
 
 import app
 reload(app)
-from app import app
+from app import wxmayaApps as appList, app
 
 # helloWorldGL need pyOpenGl to work, so if pyOpenGL is not installed, 
 # we just ignore it. 

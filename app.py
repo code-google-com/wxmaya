@@ -12,6 +12,32 @@ except:
     isMayaRunning = False
 
 
+global wxmayaApps
+try: 
+    wxmayaApps 
+except:
+    wxmayaApps = []
+
+ 
+def wxmayaAppsAdd(app):
+    global wxmayaApps 
+    try: 
+        wxmayaApps 
+    except:
+        wxmayaApps = []
+    wxmayaApps.append(app)
+
+def wxmayaAppsDel(app):
+    global wxmayaApps 
+    try: 
+        del wxmayaApps[wxmayaApps.index(app)]
+    except:
+        pass
+
+#class frame(wx.Frame):
+#    def __init__(self, title, size):
+#        wx.Frame(self, None, -1, "Hello from wxPython", size=size)
+
 class app(wx.App):
     def __init__(self, size=(800,500) ):
         self.size = size
@@ -21,12 +47,15 @@ class app(wx.App):
         else:
             wx.App.__init__(self,0)
             self.MainLoop()
+        wxmayaAppsAdd(self)
+        
     def OnInit(self):
         self.menu_bar  = wx.MenuBar()
         self.frame = wx.Frame(None, -1, "Hello from wxPython", size=self.size)
+        ##self.frame = frame("Hello from wxPython", size=self.size)
         
-        try: self.OnInitUI()
-        except: pass
+        if hasattr(self,'OnInitUI'):
+            self.OnInitUI()
         
         self.frame.Show(True)
         self.SetTopWindow(self.frame)
@@ -51,14 +80,15 @@ class app(wx.App):
                 time.sleep(0.1)
                 maya.utils.executeDeferred(process)
             
-        pumpedThread = threading.Thread(target = thread, args = ())
-        pumpedThread.start() 
+        self.pumpedThread = threading.Thread(target = thread, args = ())
+        self.pumpedThread.start() 
 
     def Close(self, event=None):
         self.keepGoing=False
         self.frame.Destroy()
         if event:
             event.Skip()
+        wxmayaAppsDel(self)
 
 if __name__ == '__main__':
     app()

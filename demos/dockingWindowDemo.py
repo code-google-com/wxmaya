@@ -1,13 +1,5 @@
 
-
-isMayaRunning = False
-try:
-    import maya.cmds as m
-    isMayaRunning = True
-except:
-    isMayaRunning = False
-
-
+import wxmaya.m as m
 
 import wx
 import wx.grid
@@ -702,7 +694,7 @@ class PyAUIFrame(wx.Frame):
         imglist.Add(wx.ArtProvider_GetBitmap(wx.ART_NORMAL_FILE, wx.ART_OTHER, wx.Size(16,16)))
         tree.AssignImageList(imglist)
         
-        if isMayaRunning:
+        if m.isMayaRunning:
             for each in m.ls(dag=True, transforms=True):
                 id = tree.AppendItem(root, each, 0)
                 for children in m.listRelatives(each):
@@ -1135,7 +1127,7 @@ interfaces quickly and easily.</p>
 
 
 # wxmaya integration!
-from app import app
+import wxmaya.app as app
 class dockingWindowDemo(app):
     def OnInitUI(self):
         # basically, we just need to replace the default self.frame 

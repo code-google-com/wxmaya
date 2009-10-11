@@ -4,19 +4,19 @@ import sys, os
 import wx
 import threading, time
 
-isMayaRunning = False
-try:
-    import maya
-    isMayaRunning = True
-except:
-    isMayaRunning = False
+import m
 
+
+class __applist(list):
+    def killall(self):
+        for each in self:
+            each.close()
 
 global wxmayaApps
 try: 
     wxmayaApps 
 except:
-    wxmayaApps = []
+    wxmayaApps = __applist()
 
  
 def wxmayaAppsAdd(app):
@@ -41,8 +41,8 @@ class frame(wx.Frame):
 class app(wx.App):
     def __init__(self, size=(800,500) ):
         self.size = size
-        if isMayaRunning :
-            maya.utils.executeDeferred(wx.App.__init__,self,0)
+        if m.isMayaRunning :
+            m.utils.executeDeferred(wx.App.__init__,self,0)
             self.runInMaya()
         else:
             wx.App.__init__(self,0)
@@ -62,7 +62,7 @@ class app(wx.App):
         self.SetTopWindow(self.frame)
         sys.displayhook = self.displayHook
         
-        self.frame.Bind(wx.EVT_CLOSE, self.Close) 
+        self.frame.Bind(wx.EVT_CLOSE, self.close) 
         return True
     
     def displayHook(self, o):
@@ -70,21 +70,27 @@ class app(wx.App):
         
         
     def runInMaya(self):
+        evtloop = wx.EventLoop()
+        old = wx.EventLoop.GetActive()
+        wx.EventLoop.SetActive(evtloop)
         self.keepGoing=True
         def process():
-                while self.Pending():
-                    self.Dispatch()
+                while evtloop.Pending():
+                    evtloop.Dispatch()
                 self.ProcessIdle()
                         
         def thread():
             while self.keepGoing:
-                time.sleep(0.1)
-                maya.utils.executeDeferred(process)
+                time.sleep(0.2)
+                m.utils.executeDeferred(process)
             
         self.pumpedThread = threading.Thread(target = thread, args = ())
         self.pumpedThread.start() 
 
-    def Close(self, event=None):
+        wx.EventLoop.SetActive(old)
+
+
+    def close(self, event=None):
         self.keepGoing=False
         self.frame.Destroy()
         if event:

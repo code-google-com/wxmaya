@@ -1,7 +1,7 @@
 
 import wx
 from  wx import glcanvas as glcanvas
-from app import app
+import wxmaya.app as app
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 

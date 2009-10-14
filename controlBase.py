@@ -4,6 +4,10 @@ reload(log)
 reload(m)
 reload(app)
 
+import mthread
+reload(mthread)
+from mthread import mthread
+
 import  wx.lib.newevent
 mayaUpdate, EVT_MAYA_UPDATE = wx.lib.newevent.NewEvent()
 
@@ -33,7 +37,7 @@ TODO: add suport to node wildcards, allowing one control to be "connected" to mo
 Also, allows for dinamic attachment of the control to nodes created after the UI. 
 Wildcard need to be implemented as a class that gets dinamicaly updated, so everything will be in realtime.
 '''
-class controlBase:
+class controlBase(mthread):
     '''
     controlBase class - the base class for a wxmaya controls
                         this class brings some safe methods to interact with maya from within threads. 
@@ -43,17 +47,20 @@ class controlBase:
                         inside a callback method of a control, making the wxmaya UI "live" updating maya parameters.
     '''
     def __init__(self, panel, attr):
+        mthread.__init__(self)
         attrsToWatchAdd( attr, self )
         self.attr = attr
+        if self.attr:
+            self.attrValue = self.getAttr()
         self.panel = panel
-        
         self.panel.Bind( EVT_MAYA_UPDATE, self.refresh )
+        
 
     def refresh(self):
         '''
         this function will be called if wxmaya detects that this control needs to be updated.
         '''
-        pass
+        
         
     def getAttr(self):
         '''
@@ -75,5 +82,8 @@ class controlBase:
                 m.setAttr( self.attr, value )
             m.utils.executeDeferred(attach)
 
+    def thread(self):
+        self.refresh()
+            
 
 

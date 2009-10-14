@@ -25,5 +25,14 @@ class checkbox(controlBase):
     def refresh(self, event):
         log.write('checkbox.refresh: %d\n' % event)
         if self.attr and m.isMayaRunning:
-            self.control.SetValue( bool(self.getAttr()) )
-            
+            value = self.getAttr()
+            if self.attrValue != value:
+                self.control.SetValue( bool(value) )
+                self.attrValue = value
+
+    def thread(self):
+        if self.attr and m.isMayaRunning:
+            value = self.getAttr()
+            if self.attrValue != value:
+                self.control.SetValue( bool(value) )
+                self.attrValue = value

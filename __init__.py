@@ -17,6 +17,10 @@ import app
 reload(app)
 from app import wxmayaApps as appList, app
 
+import mthread
+reload(mthread)
+from mthread import mthread
+
 
 import m
 reload(m)

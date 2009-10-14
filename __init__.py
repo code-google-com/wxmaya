@@ -21,6 +21,9 @@ from app import wxmayaApps as appList, app
 import m
 reload(m)
 
+import platform
+reload(platform)
+
 import log
 reload(log)
 

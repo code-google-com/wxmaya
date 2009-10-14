@@ -4,7 +4,7 @@ import sys, os
 import wx
 import threading, time
 
-import m
+import m, platform
 
 
 class __applist(list):
@@ -70,14 +70,21 @@ class app(wx.App):
         
         
     def runInMaya(self):
-        evtloop = wx.EventLoop()
-        old = wx.EventLoop.GetActive()
-        wx.EventLoop.SetActive(evtloop)
+        evtloop = self
+        # this fixes threading problems in OSX, but causes exceptions in Windows
+        # so, its a OSX only feature.
+        if platform.osx:
+            evtloop    = wx.EventLoop()
+            oldEvtloop = wx.EventLoop.GetActive()
         self.keepGoing=True
         def process():
+                if evtloop != self:
+                    wx.EventLoop.SetActive(evtloop)
                 while evtloop.Pending():
                     evtloop.Dispatch()
                 self.ProcessIdle()
+                if evtloop != self:
+                    wx.EventLoop.SetActive(oldEvtloop)
                         
         def thread():
             while self.keepGoing:
@@ -87,7 +94,6 @@ class app(wx.App):
         self.pumpedThread = threading.Thread(target = thread, args = ())
         self.pumpedThread.start() 
 
-        wx.EventLoop.SetActive(old)
 
 
     def close(self, event=None):

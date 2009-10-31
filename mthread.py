@@ -8,9 +8,7 @@
 
 
 import time, threading, sys
-import maya.cmds as m
-import maya.utils
-
+import m
 
 global __objects
 global __thread
@@ -56,7 +54,7 @@ def threadPumpObjects():
         for each in __objects:
             def runScriptJob():
                 m.scriptJob( runOnce=True,  idleEvent=each.thread )
-            maya.utils.executeInMainThreadWithResult( runScriptJob )
+            m.utils.executeInMainThreadWithResult( runScriptJob )
     del __thread
 
 

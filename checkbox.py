@@ -17,12 +17,12 @@ class checkbox(controlBase):
 
 
     def callback(self, event):
-        log.write('checkbox.callback: %d\n' % event.IsChecked())
+        log.write('checkbox.callback: %d' % event.IsChecked())
         if self.attr and m.isMayaRunning:
             self.setAttr( int(event.IsChecked()) )
             
     def refresh(self, event):
-        log.write('checkbox.refresh: %d\n' % event)
+        log.write('checkbox.refresh: %d' % event)
         if self.attr and m.isMayaRunning:
             value = self.getAttr()
             if self.attrValue != value:
@@ -33,5 +33,6 @@ class checkbox(controlBase):
         if self.attr and m.isMayaRunning:
             value = self.getAttr()
             if self.attrValue != value:
+                log.write( 'checkbox.thread: attr %s changed outside %s to %d' % (self.attr, __name__, value) )
                 self.control.SetValue( bool(value) )
                 self.attrValue = value

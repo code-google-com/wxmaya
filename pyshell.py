@@ -5,7 +5,7 @@ import wx.py.shell
 
 class pyshell(app):
     def OnInitUI(self):
-        self.shell = wx.py.shell.Shell(self.frame)
+        self.shell = wx.py.shell.Shell(self.panel)
 
 
 if __name__ == '__main__':

@@ -11,6 +11,7 @@ try:
     # now import the modules we need into m
     from maya.cmds import * 
     from maya import utils
+    from maya.mel import eval as mel
     
     # trying to fix OSX
     import sys

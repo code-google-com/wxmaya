@@ -30,6 +30,7 @@ reload(platform)
 
 import log
 reload(log)
+import log
 
 import demos
 reload(demos)
@@ -37,6 +38,10 @@ reload(demos)
 import checkbox
 reload(checkbox)
 from checkbox import checkbox
+
+import button
+reload(button)
+from button import button
 
 
 

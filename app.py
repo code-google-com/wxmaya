@@ -18,7 +18,9 @@ try:
 except:
     wxmayaApps = __applist()
 
- 
+class __cleanClass__:
+    pass
+
 def wxmayaAppsAdd(app):
     global wxmayaApps 
     try: 
@@ -54,10 +56,22 @@ class app(wx.App):
         self.menu_bar  = wx.MenuBar()
         #self.frame = wx.Frame(None, -1, "Hello from wxmaya", size=self.size)
         self.frame = frame("Hello from wxPython", size=self.size)
+        self.panel = wx.Panel(self.frame, -1)
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+        self.sizer.gap = 0
         
         if hasattr(self,'OnInitUI'):
             self.OnInitUI()
         
+        panelChildren = self.panel.GetChildren()
+        if len(panelChildren):
+            for each in panelChildren:
+                self.sizer.Add( each, 1, wx.EXPAND |wx.ALL, self.sizer.gap )
+            self.panel.SetSizer(self.sizer)
+        else:
+            self.frame.RemoveChild(self.panel)
+
+        self.frame.SendSizeEvent()
         self.frame.Show(True)
         self.SetTopWindow(self.frame)
         sys.displayhook = self.displayHook

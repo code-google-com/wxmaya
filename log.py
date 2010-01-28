@@ -1,4 +1,3 @@
-import sys
 
 global logDefault
 try:
@@ -24,13 +23,15 @@ try:
 except: 
     show=False
     
+import sys, m
     
 def write(msg):
     logDefault.append(msg)
     if show:
-        print msg
+        import sys
+        sys.stderr.write('wxmaya log: %s\n' % msg )
     
 def cat( stream=sys.stdout ):
-    print >>stream, '\n'.logDefault
+    print >>stream, '\n'.join(logDefault)
     
 del sys

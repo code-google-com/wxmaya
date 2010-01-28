@@ -52,7 +52,9 @@ class controlBase(mthread):
         self.attr = attr
         if self.attr:
             self.attrValue = self.getAttr()
+
         self.panel = panel
+        
         self.panel.Bind( EVT_MAYA_UPDATE, self.refresh )
         
 

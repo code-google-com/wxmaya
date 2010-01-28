@@ -1,13 +1,15 @@
 
 import wxmaya
+import wx
 
 from dockingWindowDemo import  dockingWindowDemo
 
 
 class controls(wxmaya.app):
     def OnInitUI(self):
-        self.cb1 = wxmaya.checkbox(self.frame, 'testing wxmaya.checkbox', 'perspShape.renderable')
-        self.cb1 = wxmaya.checkbox(self.frame, 'testing wxmaya.checkbox', 'perspShape.renderable')
+        self.cb1 = wxmaya.checkbox(self.panel, 'testing wxmaya.checkbox', 'perspShape.renderable')
+        self.b1  = wxmaya.button(self.panel, 'testing wxmaya.checkbox')
+        
 
 
 

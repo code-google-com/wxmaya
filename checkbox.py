@@ -1,9 +1,8 @@
 
-import wxmaya
 
-import wxmaya.log as log
-import wxmaya.m as m
-import wxmaya.app as app
+import log
+import m
+import app
 import wx
 
 from controlBase import controlBase

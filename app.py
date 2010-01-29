@@ -41,8 +41,9 @@ class frame(wx.Frame):
         wx.Frame.__init__(self, None, -1, "Hello from wxPython", size=size)
 
 class app(wx.App):
-    def __init__(self, size=(800,500) ):
+    def __init__(self, title="Hello from wxPython", size=(800,500) ):
         self.size = size
+        self.title = title
         if m.isMayaRunning :
             m.utils.executeDeferred(wx.App.__init__,self,0)
             self.runInMaya()
@@ -51,18 +52,25 @@ class app(wx.App):
             self.MainLoop()
         wxmayaAppsAdd(self)
         
+    def setTitle(self, title):
+        self.title = title
+        self.frame.SetLabel(self.title)
+
+    def setSize(self, size):
+        self.size = size
+        self.frame.SetSize(self.size)
         
     def OnInit(self):
         self.menu_bar  = wx.MenuBar()
         #self.frame = wx.Frame(None, -1, "Hello from wxmaya", size=self.size)
-        self.frame = frame("Hello from wxPython", size=self.size)
+        self.frame = frame(self.title, size=self.size)
         self.panel = wx.Panel(self.frame, -1)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.sizer.gap = 0
         
         if hasattr(self,'OnInitUI'):
             self.OnInitUI()
-        
+
         panelChildren = self.panel.GetChildren()
         if len(panelChildren):
             for each in panelChildren:

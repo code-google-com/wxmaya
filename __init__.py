@@ -17,11 +17,6 @@ import app
 reload(app)
 from app import wxmayaApps as appList, app
 
-import mthread
-reload(mthread)
-from mthread import mthread
-
-
 import m
 reload(m)
 
@@ -44,4 +39,11 @@ reload(button)
 from button import button
 
 
+
+import mthread
+reload(mthread)
+from mthread import mthread
+
+import callbackManager
+reload(callbackManager)
 

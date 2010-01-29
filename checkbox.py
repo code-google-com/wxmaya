@@ -5,6 +5,8 @@ import m
 import app
 import wx
 
+import controlBase 
+reload(controlBase)
 from controlBase import controlBase
 
 class checkbox(controlBase):
@@ -15,12 +17,6 @@ class checkbox(controlBase):
 
         self.panel.Bind(wx.EVT_CHECKBOX, self.callback, self.control)
 
-
-    def callback(self, event):
-        log.write('checkbox.callback: %d' % event.IsChecked())
-        if self.attr and m.isMayaRunning:
-            self.setAttr( int(event.IsChecked()) )
-            
     def refresh(self, event):
         log.write('checkbox.refresh: %d' % event)
         if self.attr and m.isMayaRunning:
@@ -29,10 +25,15 @@ class checkbox(controlBase):
                 self.control.SetValue( bool(value) )
                 self.attrValue = value
 
-    def thread(self):
+    def callback(self, event):
+        log.write('checkbox.callback: %d' % event.IsChecked())
+        if self.attr and m.isMayaRunning:
+            self.setAttr( int(event.IsChecked()) )
+            
+    def attrCallback(self, *args):
         if self.attr and m.isMayaRunning:
             value = self.getAttr()
             if self.attrValue != value:
-                log.write( 'checkbox.thread: attr %s changed outside %s to %d' % (self.attr, __name__, value) )
+                log.write( 'checkbox.attrCallback: attr %s changed outside %s to %d' % (self.attr, __name__, value) )
                 self.control.SetValue( bool(value) )
                 self.attrValue = value

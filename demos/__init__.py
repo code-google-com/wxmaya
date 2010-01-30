@@ -16,8 +16,7 @@ class controls(wxmaya.app):
         self.b1  = wxmaya.button(self.panel, 'select perspShape', button)
         
         self.setTitle("Controls Demo!")
-        self.setSize( (200,200) )
-        
+        self.setSize( (300,80) )
         
 
 

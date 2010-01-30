@@ -3,6 +3,7 @@
 import sys, os
 import wx
 import threading, time
+import log
 
 import m, platform
 
@@ -26,7 +27,7 @@ def wxmayaAppsAdd(app):
     try: 
         wxmayaApps 
     except:
-        wxmayaApps = []
+        wxmayaApps = __applist()
     wxmayaApps.append(app)
 
 def wxmayaAppsDel(app):
@@ -35,6 +36,7 @@ def wxmayaAppsDel(app):
         del wxmayaApps[wxmayaApps.index(app)]
     except:
         pass
+    del app
 
 class frame(wx.Frame):
     def __init__(self, title, size):
@@ -54,11 +56,9 @@ class app(wx.App):
         
     def setTitle(self, title):
         self.title = title
-        self.frame.SetLabel(self.title)
 
     def setSize(self, size):
         self.size = size
-        self.frame.SetSize(self.size)
         
     def OnInit(self):
         self.menu_bar  = wx.MenuBar()
@@ -79,12 +79,18 @@ class app(wx.App):
         else:
             self.frame.RemoveChild(self.panel)
 
+        self.frame.SetSize(self.size)
         self.frame.SendSizeEvent()
+        self.frame.SetLabel(self.title)
         self.frame.Show(True)
         self.SetTopWindow(self.frame)
         sys.displayhook = self.displayHook
         
         self.frame.Bind(wx.EVT_CLOSE, self.close) 
+        
+        if hasattr(self, 'idle'):
+            self.frame.Bind(wx.EVT_IDLE, self.idle) 
+            
         return True
     
     def displayHook(self, o):
@@ -116,9 +122,9 @@ class app(wx.App):
         self.pumpedThread = threading.Thread(target = thread, args = ())
         self.pumpedThread.start() 
 
-
-
+        
     def close(self, event=None):
+        log.write('app.close: %s' % str(event))
         self.keepGoing=False
         self.frame.Destroy()
         if event:

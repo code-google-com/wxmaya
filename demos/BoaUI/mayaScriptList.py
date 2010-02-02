@@ -19,6 +19,11 @@ class Frame1(wx.Frame):
         self.treeCtrl1 = wx.TreeCtrl(id=wxID_FRAME1TREECTRL1, name='treeCtrl1',
               parent=self, pos=wx.Point(0, 0), size=wx.Size(272, 437),
               style=wx.TR_HAS_BUTTONS)
+        self.treeCtrl1.Bind(wx.EVT_TREE_ITEM_ACTIVATED,
+              self.OnTreeCtrl1TreeItemActivated, id=wxID_FRAME1TREECTRL1)
 
     def __init__(self, parent):
         self._init_ctrls(parent)
+
+    def OnTreeCtrl1TreeItemActivated(self, event):
+        event.Skip()

@@ -7,6 +7,7 @@ import log
 
 import m, platform
 
+import callbackManager
 
 class __applist(list):
     def killall(self):
@@ -39,8 +40,8 @@ def wxmayaAppsDel(app):
     del app
 
 class frame(wx.Frame):
-    def __init__(self, title, size):
-        wx.Frame.__init__(self, None, -1, "Hello from wxPython", size=size)
+    def __init__(self, parent):
+        wx.Frame.__init__(self, parent, -1, "Hello from wxPython", size=(400,300))
 
 class app(wx.App):
     def __init__(self, title="Hello from wxPython", size=(800,500), frameClass=frame ):
@@ -65,7 +66,7 @@ class app(wx.App):
         self.size = size
         
     def OnInit(self):
-        self.menu_bar  = wx.MenuBar()
+        #self.menu_bar  = wx.MenuBar()
         #self.frame = wx.Frame(None, -1, "Hello from wxmaya", size=self.size)
         self.frame = self.__frameClass(None)
         self.panel = wx.Panel(self.frame, -1)
@@ -90,12 +91,41 @@ class app(wx.App):
         self.SetTopWindow(self.frame)
         sys.displayhook = self.displayHook
         
+        #wx events
         self.frame.Bind(wx.EVT_CLOSE, self.close) 
         
         if hasattr(self, 'idle'):
             self.frame.Bind(wx.EVT_IDLE, self.idle) 
+        
+        #maya events
+        if hasattr(self, 'connectionCallback'):
+            def connectionCallback(*args):
+                self.connectionCallback(args)
+            self.__connectionCallbackOBJ = callbackManager.mayaConnectionCallback(connectionCallback)
+
+        #if hasattr(self, 'nodeAddedCallback'):
+        #    def nodeAddedCallback(*args):
+        #        self.nodeAddedCallback(args)
+        #    self.__nodeAddedCallbackOBJ = callbackManager.mayaNodeAddedCallback(nodeAddedCallback, 'mesh')
+
+        #if hasattr(self, 'nodeRemovedCallback'):
+        #    def nodeRemovedCallback(*args):
+        #        self.nodeRemovedCallback(args)
+        #    self.__nodeRemovedCallbackOBJ = callbackManager.mayaNodeRemovedCallback(nodeRemovedCallback, 'mesh')
             
+        if hasattr(self, 'forceUpdateCallback'):
+            def forceUpdateCallback(*args):
+                self.forceUpdateCallback(args)
+            self.__forceUpdateCallbackOBJ = callbackManager.mayaAddForceUpdateCallback(forceUpdateCallback)
+            
+        if hasattr(self, 'addTimeChangeCallback'):
+            def addTimeChangeCallback(*args):
+                self.addTimeChangeCallback(args)
+            self.__forceUpdateCallbackOBJ = callbackManager.mayaAddTimeChangeCallback(addTimeChangeCallback)
+    
         return True
+
+
     
     def displayHook(self, o):
         print o
@@ -122,7 +152,7 @@ class app(wx.App):
             while self.keepGoing:
                 time.sleep(0.2)
                 m.utils.executeDeferred(process)
-            
+        
         self.pumpedThread = threading.Thread(target = thread, args = ())
         self.pumpedThread.start() 
 
@@ -131,8 +161,12 @@ class app(wx.App):
         log.write('app.close: %s' % str(event))
         self.keepGoing=False
         self.frame.Destroy()
+        self.frame.DestroyChildren()
         if event:
             event.Skip()
+        if hasattr(self, 'connectionCallback'):
+            self.__connectionCallbackOBJ.remove()
+            
         wxmayaAppsDel(self)
 
 if __name__ == '__main__':

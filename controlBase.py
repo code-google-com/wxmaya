@@ -1,12 +1,6 @@
 
 import log, m, app, wx, callbackManager
-reload(log)
-reload(m)
-reload(app)
-reload(callbackManager)
-
 import mthread
-reload(mthread)
 from mthread import mthread
 
 
@@ -40,7 +34,7 @@ TODO: add suport to node wildcards, allowing one control to be "connected" to mo
 Also, allows for dinamic attachment of the control to nodes created after the UI. 
 Wildcard need to be implemented as a class that gets dinamicaly updated, so everything will be in realtime.
 '''
-class controlBase():
+class controlBase(wx.Control):
     '''
     controlBase class - the base class for a wxmaya controls
                         this class brings some safe methods to interact with maya from within threads. 
@@ -52,15 +46,19 @@ class controlBase():
     def __init__(self, panel, attr):
         #mthread.__init__(self)
         #attrsToWatchAdd( attr, self )
+        wx.Control.__init__(self, panel, style=wx.BORDER_NONE )
         self.attr = attr
+        self.attrValue = None
+        self.mayaNodeChangeCallback = None
         if self.attr:
             self.attrValue = self.getAttr()
-            callbackManager.addCallback( attr , self.attrCallback )
+            self.mayaNodeChangeCallback = callbackManager.mayaNodeChangeCallback( attr , self.attrCallback )
 
         self.panel = panel
         
-        self.panel.Bind( EVT_MAYA_UPDATE, self.refreshUI )
-        
+        wx.Control.Bind( self, EVT_MAYA_UPDATE, self.refreshUI )
+        wx.Control.Bind( self, wx.EVT_WINDOW_DESTROY, self.close ) 
+
         
     def refreshUI(self):
         print "SSSSS"
@@ -89,13 +87,16 @@ class controlBase():
         if self.attr:
             def attach():
                 m.setAttr( self.attr, value )
-            m.utils.executeDeferred(attach)
+            m.utils.executeDeferred( attach )
 
     def attrCallback(self, *args):
         self.refresh()
 
     def thread(self):
         self.refresh()
-            
+
+    def close(self, event):
+        if self.mayaNodeChangeCallback:
+            self.mayaNodeChangeCallback.remove()
 
 

@@ -10,40 +10,30 @@ del sys
 import wx
 
 import pyshell
-reload(pyshell)
 from pyshell import pyshell
 
 import app
-reload(app)
 from app import wxmayaApps as appList, app
 
 import m
-reload(m)
 
 import platform
-reload(platform)
 
 import log
-reload(log)
 import log
 
 import demos
-reload(demos)
 
 import checkbox
-reload(checkbox)
 from checkbox import checkbox
 
 import button
-reload(button)
 from button import button
 
 
 
 import mthread
-reload(mthread)
 from mthread import mthread
 
 import callbackManager
-reload(callbackManager)
 

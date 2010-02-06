@@ -1,6 +1,9 @@
 #!/usr/bin/env python2.5
 
+import app
+del app
 from app import *
+
 import wx.py.shell
 
 class pyshell(app):

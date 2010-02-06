@@ -6,7 +6,6 @@ import app
 import wx
 
 import controlBase 
-reload(controlBase)
 from controlBase import controlBase
 
 class checkbox(controlBase):
@@ -15,7 +14,7 @@ class checkbox(controlBase):
         self.control = wx.CheckBox(self.panel, -1, attr)#, (65, 40), (150, 20), wx.NO_BORDER)
         self.control.SetValue( bool(self.getAttr()) )
 
-        self.panel.Bind(wx.EVT_CHECKBOX, self.callback, self.control)
+        self.control.Bind(wx.EVT_CHECKBOX, self.callback, self.control)
 
     def refresh(self, event):
         log.write('checkbox.refresh: %d' % event)

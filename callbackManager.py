@@ -53,6 +53,10 @@ class mayaNodeRemovedCallback(mayaCallBack):
     def __init__(self, func, nodetype = "dependNode"):
         mayaCallBack.__init__(self, OpenMaya.MDGMessage.addNodeRemovedCallback( func, nodetype ) )
 
+class mayaNodeRemovedCallback(mayaCallBack):
+    def __init__(self, func, nodetype = "dependNode"):
+        mayaCallBack.__init__(self, OpenMaya.MDGMessage.addNameChangedCallback( func, nodetype ) )
+
 class mayaAddForceUpdateCallback(mayaCallBack):
     def __init__( self, func ):
         mayaCallBack.__init__(self, OpenMaya.MDGMessage.addForceUpdateCallback( func ) )
@@ -60,6 +64,7 @@ class mayaAddForceUpdateCallback(mayaCallBack):
 class mayaAddTimeChangeCallback(mayaCallBack):
     def __init__( self, func ):
         mayaCallBack.__init__(self, OpenMaya.MDGMessage.addTimeChangeCallback( func ) )
+
 
 
 
@@ -75,7 +80,7 @@ class mayaNodeChangeCallback(mayaCallBack):
         callbackIDs = [
             OpenMaya.MNodeMessage.addAttributeChangedCallback( mobj, mayaNodeChangeCallback.attrChangedCallback, self ),
             OpenMaya.MNodeMessage.addNameChangedCallback(      mobj, mayaNodeChangeCallback.nameChangedCallback, self ),
-            OpenMaya.MNodeMessage.addNodePreRemovalCallback(   mobj, mayaNodeChangeCallback.deleteCallback, self  ),
+            OpenMaya.MNodeMessage.addNodeAboutToDeleteCallback(   mobj, mayaNodeChangeCallback.deleteCallback, self  ),
         ]
         # add the callback list to be removed automatically when the class is deleted.
         mayaCallBack.__init__(self, callbackIDs)
@@ -107,17 +112,12 @@ class mayaNodeChangeCallback(mayaCallBack):
 
     @staticmethod
     def nameChangedCallback( *args ):
-        msg         = args[0]
-        mplug       = args[1]
-        otherMPlug  = args[2]
-        node, attr = mplug.name().split('.')
-
+        print 'nameChangedCallback:',args
+        
+ 
     @staticmethod
     def deleteCallback( *args ):
-        msg         = args[0]
-        mplug       = args[1]
-        otherMPlug  = args[2]
-        
+        print 'deleteCallback:',args
         
      
      

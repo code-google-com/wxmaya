@@ -19,6 +19,33 @@ try:
     sys.stdin.flush = lambda self: None
     
     isMayaRunning = True
+
+
+    import os
+    global scriptEditorCallbackID
+    def redirectScriptEditor( file=os.path.join(os.environ['TMP'], 'mayaScriptEditorOutput.log') ):
+        global scriptEditorCallbackID
+        def callback(nativeMsg,   messageType, data):
+            f=open( file, 'a')
+            f.write('%s' % (nativeMsg) )
+            f.close()
+        
+        try: 
+            scriptEditorCallbackID
+        except:
+            import maya.OpenMaya as mo
+            f=open( file, 'w')
+            f.close()
+            scriptEditorCallbackID = mo.MCommandMessage.addCommandOutputCallback(callback, None)
+
+    def redirectScriptEditorStop():
+        global scriptEditorCallbackID
+        import maya.OpenMaya as mo
+        mo.MCommandMessage.removeCallback(scriptEditorCallbackID)
+        del scriptEditorCallbackID
+
+    del os
+    
 except:
     isMayaRunning = False
 

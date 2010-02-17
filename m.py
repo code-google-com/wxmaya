@@ -21,6 +21,22 @@ try:
     isMayaRunning = True
 
 
+    def MObject(node):
+        import maya.OpenMaya as OpenMaya
+        list = OpenMaya.MSelectionList()
+        list.add( node )
+        mobj = OpenMaya.MObject()
+        list.getDependNode( 0, mobj )
+        return mobj
+
+    def MPlug(nodeAttr):
+        import maya.OpenMaya as OpenMaya
+        node, attr = nodeAttr.split('.')
+        mobj  = __MObject(node)
+        mplug = OpenMaya.MPlug( mobj, __MObject(nodeAttr) )
+        return  mobj, mplug
+
+
     import os
     global scriptEditorCallbackID
     def redirectScriptEditor( file=os.path.join(os.environ['TMP'], 'mayaScriptEditorOutput.log') ):

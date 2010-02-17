@@ -9,19 +9,9 @@ try:
 except:
     callbacks=[]
 
+from m import MObject
+from m import MPlug
 
-def MObject(node):
-    list = OpenMaya.MSelectionList()
-    list.add( node )
-    mobj = OpenMaya.MObject()
-    list.getDependNode( 0, mobj )
-    return mobj
-
-def MPlug(nodeAttr):
-    node, attr = nodeAttr.split('.')
-    mobj  = __MObject(node)
-    mplug = OpenMaya.MPlug( mobj, __MObject(nodeAttr) )
-    return  mobj, mplug
 
 class mayaCallBack:
     def __init__(self, callbackID = None):

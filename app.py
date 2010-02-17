@@ -164,8 +164,10 @@ class app(wx.App):
         self.frame.DestroyChildren()
         if event:
             event.Skip()
-        if hasattr(self, 'connectionCallback'):
-            self.__connectionCallbackOBJ.remove()
+            
+        callbacks = filter(lambda x: '__' in x and 'callback' in x.lower(), dir(self))
+        for each in callbacks:
+            eval( 'self.%s.remove()' % each )
             
         wxmayaAppsDel(self)
 

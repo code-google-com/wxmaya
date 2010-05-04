@@ -113,7 +113,8 @@ class app(wx.App):
         panelChildren = self.panel.GetChildren()
         if len(panelChildren):
             for each in panelChildren:
-                self.sizer.Add( each, 1, wx.EXPAND |wx.ALL, self.sizer.gap )
+                try: self.sizer.Add( each, 1, wx.EXPAND |wx.ALL, self.sizer.gap )
+                except: pass
             self.panel.SetSizer(self.sizer)
         else:
             self.frame.RemoveChild(self.panel)

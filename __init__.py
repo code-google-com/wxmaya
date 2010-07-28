@@ -69,5 +69,9 @@ from button import button
 import mthread
 from mthread import mthread
 
+import progress
+reload(progress)
+from progress import progress
+
 import callbackManager
 

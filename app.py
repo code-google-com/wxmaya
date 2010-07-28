@@ -78,17 +78,23 @@ class frame(wx.Frame):
         wx.Frame.__init__(self, parent, -1, "Hello from wxPython", size=(400,300))
 
 class app(wx.App):
-    def __init__(self, title="Hello from wxPython", size=(800,500), frameClass=frame ):
+    def __init__(self, title="Hello from wxPython", size=(800,500), frameClass=frame, hidden=False ):
+        self.hidden = hidden
         self.size = size
         self.title = title
         self.__frameClass = frameClass
+        self.mayaInitDoneFlag = False
         if m.isMayaRunning :
-            m.utils.executeDeferred(wx.App.__init__,self,0)
+            m.utils.executeDeferred(self.__mayaInitDone)
             self.runInMaya()
         else:
-            wx.App.__init__(self,0)
+            self.__mayaInitDone()
             self.MainLoop()
         wxmayaAppsAdd(self)
+    
+    def __mayaInitDone(self):
+        wx.App.__init__(self,0)
+        self.mayaInitDoneFlag = True
         
     def setTitle(self, title):
         self.title = title
@@ -122,8 +128,9 @@ class app(wx.App):
         self.frame.SetSize(self.size)
         self.frame.SendSizeEvent()
         self.frame.SetLabel(self.title)
-        self.frame.Show(True)
-        self.SetTopWindow(self.frame)
+        self.frame.Show(not self.hidden)
+        if not self.hidden:
+            self.SetTopWindow(self.frame)
         sys.displayhook = self.displayHook
         
         #wx events
@@ -161,7 +168,6 @@ class app(wx.App):
         return True
 
 
-    
     def displayHook(self, o):
         print o
         
@@ -185,8 +191,8 @@ class app(wx.App):
                         
         def thread():
             while self.keepGoing:
-                time.sleep(0.2)
-                m.utils.executeDeferred(process)
+                try:m.utils.executeDeferred(process)
+                finally:time.sleep(0.2)
         
         self.pumpedThread = threading.Thread(target = thread, args = ())
         self.pumpedThread.start() 

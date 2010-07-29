@@ -39,11 +39,14 @@ import m
 import wx, time
 
 class progress(app):
-    def __init__(self, max=10, title="Go get a cofee! =)", msg="Please wait...", size=(250,220), onTop=False):
+    def __init__(self, max=10, title="Go get a cofee! =)", msg="Please wait...", size=(400,220), onTop=True):
+        dlg = progress.getCurrent()
+        if dlg:
+            dlg.close()
         self.max = max
         self.title = title
         self.msg = msg
-        self.count = 0
+        self.count = 1
         self.onTop = onTop
         app.__init__(self, title, size=size, hidden=True)
 
@@ -61,13 +64,15 @@ class progress(app):
         
     def OnInit(self):
         if not hasattr(self, 'dlg'):
+            self.frame = wx.Frame(None, 0, "", (0,0), (0,0), wx.STAY_ON_TOP)
             self.dlg = wx.ProgressDialog(self.title,
                 self.msg,
                 maximum = self.max,
-                parent=None,
+                parent=self.frame,
                 style = wx.PD_CAN_ABORT
-                | wx.STAY_ON_TOP*self.onTop
-                | wx.DIALOG_NO_PARENT
+                | wx.PD_AUTO_HIDE
+                | wx.STAY_ON_TOP
+                #| wx.DIALOG_NO_PARENT
                 | wx.PD_SMOOTH
                 | wx.PD_ELAPSED_TIME
                 | wx.PD_ESTIMATED_TIME
@@ -79,8 +84,13 @@ class progress(app):
         self.dlg.Show(True)
         self.dlg.Refresh()
         self.SetTopWindow(self.dlg)
-        
+
+        self.__hideFrame()
         return True
+    
+    def __hideFrame(self):
+        self.frame.Move((-10000,-10000))
+        self.frame.Hide()
     
     def checkMayaIsDone(self):
         if m.isMayaRunning:
@@ -90,7 +100,7 @@ class progress(app):
                 count += 1 
                 if count>10:
                     raise Exception("ERROR: wxmaya got stuck on progress class")
-
+        self.__hideFrame()
    
     def setMsg(self, msg):
         self.update( msg=msg )
@@ -115,10 +125,11 @@ class progress(app):
             self.close()
         
         
-    def close(self):
+    def close(self, event=None):
+        if event:
+            event.Skip()
         self.checkMayaIsDone()
-        self.frame = self.dlg
-        app.close(self)
+        app.close(self, event)
 
 
 if __name__ == '__main__':

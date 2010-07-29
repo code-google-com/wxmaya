@@ -191,8 +191,8 @@ class app(wx.App):
                         
         def thread():
             while self.keepGoing:
-                try:m.utils.executeDeferred(process)
-                finally:time.sleep(0.2)
+                time.sleep(0.2)
+                m.utils.executeDeferred(process)
         
         self.pumpedThread = threading.Thread(target = thread, args = ())
         self.pumpedThread.start() 
@@ -201,6 +201,7 @@ class app(wx.App):
     def close(self, event=None):
         log.write('app.close: %s' % str(event))
         self.keepGoing=False
+        self.frame.Close(True)
         self.frame.Destroy()
         self.frame.DestroyChildren()
         if event:

@@ -83,6 +83,8 @@ class app(wx.App):
         self.size = size
         self.title = title
         self.__frameClass = frameClass
+        self.parent = None
+        #self.__getMayaParent() 
         self.mayaInitDoneFlag = False
         if m.isMayaRunning :
             m.utils.executeDeferred(self.__mayaInitDone)
@@ -91,6 +93,39 @@ class app(wx.App):
             self.__mayaInitDone()
             self.MainLoop()
         wxmayaAppsAdd(self)
+        
+    def __getMayaParent(self):
+        ''' 
+            parent an app to the main maya windows in windows.
+            not working yet!
+            http://forums.cgsociety.org/archive/index.php/t-453070.html
+        '''
+        import traceback
+        import win32gui, win32process
+        
+        def callback(handle,winList):
+            winList.append(handle)
+            return True
+
+        wins = []
+
+        win32gui.EnumWindows(callback, wins)
+        currentId = os.getpid()
+
+        for handle in wins:
+            tpid,pid = win32process.GetWindowThreadProcessId(handle)
+            if pid == currentId:
+                title = win32gui.GetWindowText(handle)
+                if title.startswith("Autodesk Maya"):
+                    self.parent = handle
+                    
+        if self.parent:
+            app = wx.GetApp()
+            top = wx.PreFrame()
+            top.AssociateHandle(self.parent)
+            top.PostCreate(top)
+            app.SetTopWindow(top)
+            self.parent = top
     
     def __mayaInitDone(self):
         wx.App.__init__(self,0)
@@ -108,7 +143,7 @@ class app(wx.App):
     def OnInit(self):
         #self.menu_bar  = wx.MenuBar()
         #self.frame = wx.Frame(None, -1, "Hello from wxmaya", size=self.size)
-        self.frame = self.__frameClass(None)
+        self.frame = self.__frameClass(self.parent)
         self.panel = wx.Panel(self.frame, -1)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.sizer.gap = 0

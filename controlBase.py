@@ -81,6 +81,7 @@ class controlBase(wx.Control):
         #mthread.__init__(self)
         #attrsToWatchAdd( attr, self )
         wx.Control.__init__(self, panel, style=wx.BORDER_NONE )
+        self.Hide()
         self.attr = attr
         self.attrValue = None
         self.mayaNodeChangeCallback = None
